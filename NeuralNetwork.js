@@ -17,7 +17,7 @@ class NeuralNetwork {
     this.bias_h.randomize();
     this.bias_o.randomize();
 
-    this.learning_rate = 0.05;
+    this.learning_rate = 0.1;
   }
 
   activationFunction(input) {
@@ -30,6 +30,7 @@ class NeuralNetwork {
 
   feedforward(inputsArr) {
     let inputs = Matrix.fromArray(inputsArr);
+    this.weights_ih
     let hiddenOutput = Matrix.multiply(this.weights_ih, inputs);
     hiddenOutput = Matrix.add(hiddenOutput, this.bias_h);
     hiddenOutput = Matrix.map(hiddenOutput, this.activationFunction);
@@ -51,17 +52,17 @@ class NeuralNetwork {
     this.bias_o.data = weights.bias_o;
   }
 
-  save() {
+  save(filename) {
     let weights = {
-      weights_ih: this.weights_ih,
-      weights_ho: this.weights_ho,
-      bias_h: this.bias_h,
-      bias_o: this.bias_o,
+      weights_ih: this.weights_ih.data,
+      weights_ho: this.weights_ho.data,
+      bias_h: this.bias_h.data,
+      bias_o: this.bias_o.data,
     };
 
     weights = JSON.stringify(weights);
 
-    fs.writeFile("./model.json", weights, "utf8", function (err) {
+    fs.writeFile(filename, weights, "utf8", function (err) {
       if (err) {
         return console.log(err);
       }
