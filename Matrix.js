@@ -137,3 +137,5 @@ class Matrix {
     return resultingMatrix;
   }
 }
+
+module.exports = Matrix;

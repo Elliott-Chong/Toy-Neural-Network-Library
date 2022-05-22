@@ -1,3 +1,6 @@
+const Matrix = require("./Matrix.js");
+const fs = require("fs");
+
 class NeuralNetwork {
   constructor(inputNodes, hiddenNodes, outputNodes) {
     this.inputNodes = inputNodes;
@@ -34,8 +37,37 @@ class NeuralNetwork {
     let guesses = Matrix.multiply(this.weights_ho, hiddenOutput);
     guesses = Matrix.add(guesses, this.bias_o);
     guesses = Matrix.map(guesses, this.activationFunction);
-
+    guesses = Matrix.map(guesses, (elt) => {
+      return elt.toFixed(3);
+    });
     return Matrix.toArray(guesses);
+  }
+
+  load(filename) {
+    var weights = JSON.parse(fs.readFileSync(filename, "utf8"));
+    this.weights_ih.data = weights.weights_ih;
+    this.weights_ho.data = weights.weights_ho;
+    this.bias_h.data = weights.bias_h;
+    this.bias_o.data = weights.bias_o;
+  }
+
+  save() {
+    let weights = {
+      weights_ih: this.weights_ih,
+      weights_ho: this.weights_ho,
+      bias_h: this.bias_h,
+      bias_o: this.bias_o,
+    };
+
+    weights = JSON.stringify(weights);
+
+    fs.writeFile("./model.json", weights, "utf8", function (err) {
+      if (err) {
+        return console.log(err);
+      }
+
+      console.log("The file was saved!");
+    });
   }
 
   train(inputsArr, targetsArr) {
@@ -92,3 +124,5 @@ class NeuralNetwork {
     this.bias_h = Matrix.add(this.bias_h, gradient_ih);
   }
 }
+
+module.exports = NeuralNetwork;
